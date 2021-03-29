@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const userSchema = new Schema(
+const biodataSchema = new Schema(
   {
     name: {
       type: String,
@@ -19,4 +19,4 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Biodata", userSchema);
+module.exports = mongoose.model("Biodata", biodataSchema);

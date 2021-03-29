@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Biodata = require("../models/biodata");
+const Comment = require("../models/comment");
 
 const createUser = (req, res) => {
   Biodata.create({
@@ -11,7 +12,7 @@ const createUser = (req, res) => {
       User.create({
         email: req.body.email,
         password: req.body.password,
-        biodata_id: biodata._id,
+        biodata: biodata._id,
       })
         .then((user) => {
           res.json(user);
@@ -25,22 +26,40 @@ const createUser = (req, res) => {
     });
 };
 
-const findAllUsers = (req, res) => {
-  User.aggregate([
-    {
-      $lookup: {
-        localField: "biodata_id",
-        from: "biodatas",
-        foreignField: "_id",
-        as: "user_biodata",
+const findAllUsers = async (req, res) => {
+  const users = await User.find().populate("biodata").populate("comments");
+  res.json(users);
+};
+
+const findOneUserAndUpdate = (req, res) => {
+  Comment.create({
+    text: req.body.text,
+  }).then((comment) => {
+    User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { comments: comment._id },
       },
-    },
-  ]).then((result) => {
-    res.json(result);
+      { new: true, useFindAndModify: false }
+    ).then((user) => {
+      res.json(user);
+    });
   });
 };
+
+// const deleteUser = (req, res) => {
+//   User.deleteOne({_id: req.params.id})
+//   .then(user=>{
+//     Biodata.deleteOne({_id: user.biodata})
+//     Comment.dele
+//   })
+// };
+
+
 
 module.exports = {
   createUser,
   findAllUsers,
+  findOneUserAndUpdate,
+  // deleteUser,
 };

@@ -11,10 +11,16 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    biodata_id: {
+    biodata: {
       type: Schema.Types.ObjectId,
-      required: true,
+      ref: "Biodata",
     },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   { timestamps: true }
 );
