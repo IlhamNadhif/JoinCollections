@@ -11,6 +11,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    biodata_id: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
   },
   { timestamps: true }
 );

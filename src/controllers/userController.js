@@ -2,19 +2,19 @@ const User = require("../models/user");
 const Biodata = require("../models/biodata");
 
 const createUser = (req, res) => {
-  User.create({
-    email: req.body.email,
-    password: req.body.password,
+  Biodata.create({
+    name: req.body.name,
+    address: req.body.address,
+    age: req.body.age,
   })
-    .then((user) => {
-      Biodata.create({
-        name: req.body.name,
-        address: req.body.address,
-        age: req.body.age,
-        user: user._id,
+    .then((biodata) => {
+      User.create({
+        email: req.body.email,
+        password: req.body.password,
+        biodata_id: biodata._id,
       })
-        .then((biodata) => {
-          res.json(biodata);
+        .then((user) => {
+          res.json(user);
         })
         .catch((err) => {
           console.log(err);
@@ -29,16 +29,15 @@ const findAllUsers = (req, res) => {
   User.aggregate([
     {
       $lookup: {
-        localField: "_id",
+        localField: "biodata_id",
         from: "biodatas",
-        foreignField: "user",
+        foreignField: "_id",
         as: "user_biodata",
       },
     },
-  ])
-  .then(result=>{
-    res.json(result)
-  })
+  ]).then((result) => {
+    res.json(result);
+  });
 };
 
 module.exports = {
